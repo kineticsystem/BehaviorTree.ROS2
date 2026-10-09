@@ -186,6 +186,13 @@ void TreeExecutionServer::execute(
     executeRegistration();
   }
 
+  // Whether onTreeCreated() was called for this goal: only then is there a tree
+  // of this goal to halt, and an execution to complete, if an exception is thrown.
+  bool tree_created = false;
+  // Whether onTreeExecutionCompleted() was called for this goal, so that it is
+  // not called again if it throws.
+  bool execution_completed = false;
+
   // Loop until something happens with ROS or the node completes
   try
   {
@@ -198,6 +205,7 @@ void TreeExecutionServer::execute(
 
     // call user defined function after the tree has been created
     onTreeCreated(p_->tree);
+    tree_created = true;
     p_->groot_publisher.reset();
     p_->groot_publisher =
         std::make_shared<BT::Groot2Publisher>(p_->tree, p_->params.groot2_port);
@@ -209,10 +217,11 @@ void TreeExecutionServer::execute(
 
     // operations to be done if the tree execution is aborted, either by
     // cancel requested or by onLoopAfterTick()
-    auto stop_action = [this, &action_result](BT::NodeStatus status,
-                                              const std::string& message) {
+    auto stop_action = [this, &action_result, &execution_completed](
+                           BT::NodeStatus status, const std::string& message) {
       p_->tree.haltTree();
       action_result->node_status = ConvertNodeStatus(status);
+      execution_completed = true;
       // override the message value if the user defined function returns it
       if(auto msg = onTreeExecutionCompleted(status, true))
       {
@@ -264,6 +273,30 @@ void TreeExecutionServer::execute(
   {
     action_result->return_message = std::string("Behavior Tree exception:") + ex.what();
     RCLCPP_ERROR(kLogger, action_result->return_message.c_str());
+    status = BT::NodeStatus::FAILURE;
+    action_result->node_status = ConvertNodeStatus(status);
+    if(tree_created && !execution_completed)
+    {
+      // An exception thrown after onTreeCreated(), e.g. by a node while the tree
+      // is ticked or by a user defined callback, leaves the nodes as they were,
+      // e.g. an action whose goal still runs: halt them, as when the execution
+      // is cancelled.
+      try
+      {
+        p_->tree.haltTree();
+      }
+      catch(const std::exception& halt_ex)
+      {
+        RCLCPP_ERROR(kLogger, "Exception while halting the Behavior Tree: %s",
+                     halt_ex.what());
+      }
+      // The execution ends here too: let the user clean up, as for any other end.
+      // Override the message value if the user defined function returns it
+      if(auto msg = onTreeExecutionCompleted(status, false))
+      {
+        action_result->return_message = msg.value();
+      }
+    }
     goal_handle->abort(action_result);
     return;
   }

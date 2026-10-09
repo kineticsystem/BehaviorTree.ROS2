@@ -125,7 +125,9 @@ protected:
 
   /**
    * @brief onTreeExecutionCompleted is a callback invoked after the tree execution is completed,
-   * i.e. if it returned SUCCESS/FAILURE or if the action was cancelled by the Action Client.
+   * i.e. if it returned SUCCESS/FAILURE, if the action was cancelled by the Action Client,
+   * or if an exception was thrown after onTreeCreated(), e.g. by a node while the tree was
+   * ticked or by another callback: the tree is then halted, and the status is FAILURE.
    *
    * @param status The status of the tree after the last tick
    * @param was_cancelled True if the action was cancelled by the Action Client

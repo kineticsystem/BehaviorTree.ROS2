@@ -53,6 +53,11 @@ This happens if:
 1. Ticking the tree returns SUCCESS/FAILURE
 2. The `rclcpp_action::Client` cancels the action.
 3. Callback `onLoopAfterTick`cancels the execution.
+4. An exception is thrown after `onTreeCreated` returns, e.g. by a node while the
+   tree is ticked, or by `onLoopAfterTick` or `onLoopFeedback`. The tree is halted,
+   and the callback receives FAILURE. It is not called when the exception is thrown
+   before, e.g. by the creation of the tree or by `onTreeCreated` itself, and it is
+   not called a second time when it throws itself.
 
 Argument `was_cancelled`is true in the 1st case, false otherwise.
 
