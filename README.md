@@ -1,5 +1,5 @@
 # BehaviorTree.ROS2
-[![Test](https://github.com/BehaviorTree/BehaviorTree.ROS2/actions/workflows/test.yml/badge.svg)](https://github.com/BehaviorTree/BehaviorTree.ROS2/actions/workflows/test.yml)
+[![Test](https://github.com/BehaviorTree/BehaviorTree.ROS2/actions/workflows/test.yml/badge.svg)](https://github.com/BehaviorTree/BehaviorTree.ROS2/actions/workflows/test.yml) *(upstream, [BehaviorTree/BehaviorTree.ROS2](https://github.com/BehaviorTree/BehaviorTree.ROS2), not this fork)*
 
 This repository contains useful wrappers to use ROS2 and BehaviorTree.CPP together.
 
@@ -28,7 +28,7 @@ Note that this library is compatible **only** with:
 - **BT.CPP** 4.6 or newer.
 - **ROS2** Humble or newer.
 
-Additionally, check **plugins.hpp** to see how to learn how to
+Additionally, check **plugins.hpp** to learn how to
 wrap your Nodes into plugins that can be loaded at run-time.
 
 

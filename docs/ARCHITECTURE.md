@@ -82,7 +82,7 @@ The fork's `catch` block does what every other end of a run does:
 
 The two flags draw the limits. An exception thrown before `onTreeCreated()` returns, by `createTree()` for an unknown tree or by `onTreeCreated()` itself, is handled as upstream does, apart from the status: there is no tree of this goal to halt and no run to complete. An exception thrown by `onTreeExecutionCompleted()` itself, when it is called for a cancel or for a stop asked by `onLoopAfterTick()`, does not call it a second time. The same path serves an exception thrown by `onLoopAfterTick()` or `onLoopFeedback()`, which run in the same `try` block.
 
-The fork also adds this document, with its diagrams in `docs/diagrams` and the two scripts of `bin` that render and check them. They touch no code.
+The fork also adds this document, with its diagrams in `docs/diagrams` and the two scripts of `bin` that render and check them. It also corrects upstream's documentation where it did not match the code: the Test badge and a sentence of the README, the sample log and the wording of `btcpp_ros2_samples/README.md`, a comment of `btcpp_ros2_samples/config/sample_bt_executor.yaml`, and a note on the key of a parameter file in `tree_execution_server.md`. None of it touches code.
 
 ### Where It Sits
 
