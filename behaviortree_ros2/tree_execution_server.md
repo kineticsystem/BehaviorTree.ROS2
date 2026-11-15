@@ -72,7 +72,7 @@ sent as feedback to the `rclcpp_action::Client`.
 
 ## ROS Parameters
 
-Documentation for the parameters used by the `TreeExecutionServer` can be found [here](bt_executor_parameters.md).
+Documentation for the parameters used by the `TreeExecutionServer` can be found [here](bt_executor_parameters.md). That document is generated and shows the key `bt_server`; in a parameter file the key is the name of the node, `bt_action_server` by default.
 
 If the parameter documentation needs updating you can regenerate it with:
 ```bash
